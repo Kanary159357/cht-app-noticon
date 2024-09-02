@@ -1,45 +1,21 @@
+import { Toaster } from '@/components/ui/sonner.tsx'
+import { injectDevMock } from '@/utils/wam.ts'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-console.log()
-if(import.meta.env.MODE === "development"){
-  window.ChannelIOWam = {
-    getWamData: (key: string) => {
-      if (key === 'channelId') {
-        return 'channelId'
-      }
-      if (key === 'managerId') {
-        return 'managerId'
-      }
-      if (key === 'chatId') {
-        return 'chatId'
-      }
-      if (key === 'chatType') {
-        return 'chatType'
-      }
-      if (key === 'broadcast') {
-        return 'broadcast'
-      }
-      if (key === 'rootMessageId') {
-        return 'rootMessageId'
-      }
-      if (key === 'isPrivate') {
-        return 'isPrivate'
-      }
-      return undefined
-    },
-    close: () => {},
-    setSize: () => {},
-    callFunction: () => Promise.resolve(),
-    callNativeFunction: () => Promise.resolve(),
-    callCommand: () => {},
-  }
-}
 
+const queryClient = new QueryClient()
+if (import.meta.env.MODE === 'development') {
+  injectDevMock()
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
+    <QueryClientProvider client={queryClient}>
+      <App />
+      <Toaster />
+    </QueryClientProvider>
+  </StrictMode>
 )
